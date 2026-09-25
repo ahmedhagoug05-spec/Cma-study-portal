@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMA Part 1 Study Portal - HOCK vs GLEIM</title>
+    <style>
+        :root {
+            --primary-hock: #1e3a8a;
+            --primary-gleim: #065f46;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --success-color: #16a34a;
+            --error-color: #dc2626;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* TRACK TABS */
+        .track-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .track-btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #e2e8f0;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .track-btn.active-hock {
+            background-color: var(--primary-hock);
+            color: white;
+        }
+
+        .track-btn.active-gleim {
+            background-color: var(--primary-gleim);
+            color: white;
+        }
+
+        /* GATE TABS */
+        .gate-nav {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .gate-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            cursor: pointer;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+        }
+
+        .gate-btn.active {
+            color: var(--text-color);
+            border-bottom-color: #3b82f6;
+        }
+
+        /* CONTENT PANELS */
+        .panel {
+            display: none;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* MCQ CARDS */
+        .mcq-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        .mcq-stem {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .option-item:hover {
+            background-color: #f1f5f9;
+        }
+
+        .option-item.correct-selected {
+            background-color: #dcfce7;
+            border-color: var(--success-color);
+            color: #14532d;
+            font-weight: 600;
+        }
+
+        .option-item.incorrect-selected {
+            background-color: #fee2e2;
+            border-color: var(--error-color);
+            color: #7f1d1d;
+        }
+
+        .explanation-box {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 0.8rem;
+            border-radius: 12px;
+            background-color: #e2e8f0;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>CMA Part 1 Study Portal</h1>
+        <p>Isolated Publisher Tracks & Gate System</p>
+    </header>
+
+    <!-- TRACK SELECTION -->
+    <div class="track-tabs">
+        <button class="track-btn active-hock" id="btnTrackHock" onclick="selectTrack('HOCK')">Track 1: HOCK International</button>
+        <button class="track-btn" id="btnTrackGleim" onclick="selectTrack('GLEIM')">Track 2: GLEIM</button>
+    </div>
+
+    <!-- GATE NAVIGATION -->
+    <div class="gate-nav">
+        <button class="gate-btn active" onclick="selectGate('gate1')">Gate 1: Full Text</button>
+        <button class="gate-btn" onclick="selectGate('gate2')">Gate 2: Executive Summary</button>
+        <button class="gate-btn" onclick="selectGate('gate3')">Gate 3: Notes & Traps</button>
+        <button class="gate-btn" onclick="selectGate('gate4')">Gate 4: MCQs (20+ Qs)</button>
+    </div>
+
+    <!-- GATE PANELS -->
+    <div id="gate1" class="panel active"></div>
+    <div id="gate2" class="panel"></div>
+    <div id="gate3" class="panel"></div>
+    <div id="gate4" class="panel"></div>
+</div>
+
+<script>
+// =====================================================================
+// DATA STORE (Isolated Tracks for HOCK and GLEIM)
+// =====================================================================
+const studyData = {
+    HOCK: {
+        unitTitle: "Unit 1: External Financial Reporting Decisions (HOCK Track)",
+        gate1: "<h3>Full Textbook Content</h3><p>HOCK International's comprehensive conceptual focus on financial accounting standards, revenue recognition models, and statement layouts...</p>",
+        gate2: "<h3>Executive Summary</h3><p>Key summary of ASC 606 revenue recognition steps, balance sheet asset classification rules, and key financial ratios.</p>",
+        gate3: [
+            "TRAP: Freight-out is a selling expense (period cost), NOT a inventory/product cost.",
+            "NOTE: ASC 606 requires a 5-step model for revenue recognition.",
+            "TRAP: Do not include discontinued operations in income from continuing operations."
+        ],
+        gate4: generateSampleQuestions("HOCK", 20)
+    },
+    GLEIM: {
+        unitTitle: "Unit 1: Financial Statements Overview (GLEIM Track)",
+        gate1: "<h3>Full Textbook Content</h3><p>GLEIM's outline-style breakdown of financial statement components, balance sheet line items, and income statement elements...</p>",
+        gate2: "<h3>Executive Summary</h3><p>High-yield outline summaries covering current vs. non-current distinctions and operating vs. financing cash flows.</p>",
+        gate3: [
+            "TRAP: Non-cash investing and financing activities must be disclosed separately, not on the cash flow grid.",
+            "NOTE: Under US GAAP, interest paid is classified under Operating Activities.",
+            "TRAP: Comprehensive income excludes investments by and distributions to owners."
+        ],
+        gate4: generateSampleQuestions("GLEIM", 20)
+    }
+};
+
+let currentTrack = "HOCK";
+let currentGate = "gate1";
+
+// Generator function to create structured 20 MCQs for testing
+function generateSampleQuestions(publisher, count) {
+    const questions = [];
+    for (let i = 1; i <= count; i++) {
+        questions.push({
+            id: i,
+            stem: `[${publisher} Style Q${i}] Which of the following statements correctly describes the handling of specific accounting items under this unit?`,
+            options: {
+                A: "Option A statement representing standard reporting procedure.",
+                B: "Option B statement confusing period costs with product costs.",
+                C: "Option C statement applying an incorrect valuation method.",
+                D: "Option D statement omitting key disclosure rules."
+            },
+            correct: "A",
+            rationales: {
+                A: "Correct. Option A properly aligns with US GAAP standard treatment.",
+                B: "Incorrect. Option B misclassifies period expenses into inventory valuation.",
+                C: "Incorrect. Option C applies historical cost incorrectly.",
+                D: "Incorrect. Option D fails to include mandatory note disclosures."
+            }
+        });
+    }
+    return questions;
+}
+
+// UI State Management
+function selectTrack(track) {
+    currentTrack = track;
+    
+    // Update Track Buttons
+    document.getElementById("btnTrackHock").className = `track-btn ${track === 'HOCK' ? 'active-hock' : ''}`;
+    document.getElementById("btnTrackGleim").className = `track-btn ${track === 'GLEIM' ? 'active-gleim' : ''}`;
+
+    renderContent();
+}
+
+function selectGate(gateId) {
+    currentGate = gateId;
+    
+    // Update Gate Buttons
+    const buttons = document.querySelectorAll(".gate-btn");
+    buttons.forEach((btn, idx) => {
+        btn.classList.toggle("active", `gate${idx + 1}` === gateId);
+    });
+
+    renderContent();
+}
+
+function renderContent() {
+    const data = studyData[currentTrack];
+
+    // Hide all panels
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+
+    const activePanel = document.getElementById(currentGate);
+    activePanel.classList.add("active");
+
+    if (currentGate === "gate1") {
+        activePanel.innerHTML = `<h2>${data.unitTitle}</h2>` + data.gate1;
+    } else if (currentGate === "gate2") {
+        activePanel.innerHTML = `<h2>${data.unitTitle}</h2>` + data.gate2;
+    } else if (currentGate === "gate3") {
+        let html = `<h2>Study Notes & Exam Traps</h2><ul>`;
+        data.gate3.forEach(note => { html += `<li>${note}</li>`; });
+        html += `</ul>`;
+        activePanel.innerHTML = html;
+    } else if (currentGate === "gate4") {
+        let html = `<h2>Practice MCQs (${data.gate4.length} Questions)</h2>`;
+        data.gate4.forEach(q => {
+            html += `
+                <div class="mcq-card">
+                    <span class="badge">${currentTrack} - Q${q.id}</span>
+                    <div class="mcq-stem">${q.stem}</div>
+                    <ul class="options-list">
+                        ${Object.keys(q.options).map(opt => `
+                            <li class="option-item" onclick="checkAnswer(this, '${currentTrack}', ${q.id}, '${opt}')">
+                                <strong>(${opt})</strong>${q.options[opt]}
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <div class="explanation-box" id="exp-${currentTrack}-${q.id}"></div>
+                </div>
+            `;
+        });
+        activePanel.innerHTML = html;
+    }
+}
+
+function checkAnswer(element, track, qId, selectedOpt) {
+    const question = studyData[track].gate4.find(q => q.id === qId);
+    const parentList = element.parentElement;
+    
+    // Reset styling within this card
+    parentList.querySelectorAll(".option-item").forEach(item => {
+        item.className = "option-item";
+    });
+
+    const expBox = document.getElementById(`exp-${track}-${qId}`);
+    expBox.style.display = "block";
+
+    if (selectedOpt === question.correct) {
+        element.classList.add("correct-selected");
+        expBox.innerHTML = `<strong>Correct!</strong><br>${question.rationales[selectedOpt]}`;
+    } else {
+        element.classList.add("incorrect-selected");
+        expBox.innerHTML = `<strong>Incorrect.</strong> Choice (${selectedOpt}) is wrong because: ${question.rationales[selectedOpt]}<br><br><strong>Correct Answer (${question.correct}):</strong> ${question.rationales[question.correct]}`;
+    }
+}
+
+// Initial Render
+renderContent();
+</script>
+
+</body>
+</html>
