@@ -3,344 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMA Part 1 Study Portal - HOCK vs GLEIM</title>
+    <title>CMA Hock Prep Portal</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-hock: #1e3a8a;
-            --primary-gleim: #065f46;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --border-color: #e2e8f0;
-            --success-color: #16a34a;
-            --error-color: #dc2626;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
+            background-color: #0b0c10;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Slowly moving dark RGB setup background */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* High-end PC setup visual simulation */
+        .pc-monitor-visual {
+            width: 80%;
+            max-width: 900px;
+            height: 500px;
+            background: #1f2833;
+            border: 12px solid #0b0c10;
+            border-radius: 12px;
+            box-shadow: 0 0 35px rgba(102, 252, 241, 0.25), 0 0 15px rgba(69, 162, 158, 0.3);
+            position: relative;
+            overflow: hidden;
+            opacity: 0.65;
+            display: flex;
+            flex-direction: column;
             padding: 20px;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
+        /* Simulated Financial Model on Screen */
+        .financial-model-screen {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            height: 100%;
+            width: 100%;
+        }
+
+        .chart-area {
+            background: rgba(11, 12, 16, 0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .chart-line {
+            height: 4px;
+            background: linear-gradient(90deg, #66fcf1, #45a29e, #c5a059);
+            border-radius: 2px;
+            box-shadow: 0 0 8px #66fcf1;
+        }
+
+        .data-grid {
+            background: rgba(11, 12, 16, 0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            padding: 10px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #66fcf1;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-bottom: 3px;
+        }
+
+        /* Overlay UI Container */
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2;
         }
 
         header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 35px;
         }
 
-        /* TRACK TABS */
-        .track-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        header h1 {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            color: #ffffff;
         }
 
-        .track-btn {
-            flex: 1;
-            padding: 15px;
+        header p {
+            color: #c5a059;
             font-size: 1.1rem;
-            font-weight: bold;
-            border: 2px solid transparent;
-            border-radius: 8px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        /* Translucent, Light Colored Glassmorphism Buttons */
+        .gates-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .gate-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px;
             cursor: pointer;
-            background-color: #e2e8f0;
-            color: #475569;
-            transition: all 0.2s;
-        }
-
-        .track-btn.active-hock {
-            background-color: var(--primary-hock);
-            color: white;
-        }
-
-        .track-btn.active-gleim {
-            background-color: var(--primary-gleim);
-            color: white;
-        }
-
-        /* GATE TABS */
-        .gate-nav {
+            transition: all 0.3s ease;
             display: flex;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 20px;
-            background-color: var(--card-bg);
-            border-radius: 8px 8px 0 0;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            color: white;
         }
 
-        .gate-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: none;
-            font-weight: 600;
-            cursor: pointer;
-            color: #64748b;
-            border-bottom: 3px solid transparent;
+        .gate-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 12px 40px 0 rgba(102, 252, 241, 0.2);
         }
 
-        .gate-btn.active {
-            color: var(--text-color);
-            border-bottom-color: #3b82f6;
-        }
-
-        /* CONTENT PANELS */
-        .panel {
-            display: none;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .panel.active {
-            display: block;
-        }
-
-        /* MCQ CARDS */
-        .mcq-card {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 18px;
-            margin-bottom: 20px;
-            background-color: #fff;
-        }
-
-        .mcq-stem {
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .options-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .option-item {
-            padding: 10px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .option-item:hover {
-            background-color: #f1f5f9;
-        }
-
-        .option-item.correct-selected {
-            background-color: #dcfce7;
-            border-color: var(--success-color);
-            color: #14532d;
-            font-weight: 600;
-        }
-
-        .option-item.incorrect-selected {
-            background-color: #fee2e2;
-            border-color: var(--error-color);
-            color: #7f1d1d;
-        }
-
-        .explanation-box {
-            display: none;
-            margin-top: 15px;
-            padding: 12px;
-            background-color: #f8fafc;
-            border-left: 4px solid #3b82f6;
-            border-radius: 4px;
-            font-size: 0.95rem;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            font-size: 0.8rem;
+        .gate-icon {
+            font-size: 1.8rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 12px;
-            background-color: #e2e8f0;
-            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .gate-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .gate-info p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1f2833;
+            border: 1px solid rgba(102, 252, 241, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-btn:hover { color: #fff; }
+
+        .modal-content h2 {
+            margin-bottom: 15px;
+            color: #66fcf1;
+        }
+
+        .story-card, .unit-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #66fcf1;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+        }
+
+        .story-card h4 { color: #c5a059; }
+
+        @media (max-width: 600px) {
+            .gates-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>CMA Part 1 Study Portal</h1>
-        <p>Isolated Publisher Tracks & Gate System</p>
-    </header>
-
-    <!-- TRACK SELECTION -->
-    <div class="track-tabs">
-        <button class="track-btn active-hock" id="btnTrackHock" onclick="selectTrack('HOCK')">Track 1: HOCK International</button>
-        <button class="track-btn" id="btnTrackGleim" onclick="selectTrack('GLEIM')">Track 2: GLEIM</button>
-    </div>
-
-    <!-- GATE NAVIGATION -->
-    <div class="gate-nav">
-        <button class="gate-btn active" onclick="selectGate('gate1')">Gate 1: Full Text</button>
-        <button class="gate-btn" onclick="selectGate('gate2')">Gate 2: Executive Summary</button>
-        <button class="gate-btn" onclick="selectGate('gate3')">Gate 3: Notes & Traps</button>
-        <button class="gate-btn" onclick="selectGate('gate4')">Gate 4: MCQs (20+ Qs)</button>
-    </div>
-
-    <!-- GATE PANELS -->
-    <div id="gate1" class="panel active"></div>
-    <div id="gate2" class="panel"></div>
-    <div id="gate3" class="panel"></div>
-    <div id="gate4" class="panel"></div>
-</div>
-
-<script>
-// =====================================================================
-// DATA STORE (Isolated Tracks for HOCK and GLEIM)
-// =====================================================================
-const studyData = {
-    HOCK: {
-        unitTitle: "Unit 1: External Financial Reporting Decisions (HOCK Track)",
-        gate1: "<h3>Full Textbook Content</h3><p>HOCK International's comprehensive conceptual focus on financial accounting standards, revenue recognition models, and statement layouts...</p>",
-        gate2: "<h3>Executive Summary</h3><p>Key summary of ASC 606 revenue recognition steps, balance sheet asset classification rules, and key financial ratios.</p>",
-        gate3: [
-            "TRAP: Freight-out is a selling expense (period cost), NOT a inventory/product cost.",
-            "NOTE: ASC 606 requires a 5-step model for revenue recognition.",
-            "TRAP: Do not include discontinued operations in income from continuing operations."
-        ],
-        gate4: generateSampleQuestions("HOCK", 20)
-    },
-    GLEIM: {
-        unitTitle: "Unit 1: Financial Statements Overview (GLEIM Track)",
-        gate1: "<h3>Full Textbook Content</h3><p>GLEIM's outline-style breakdown of financial statement components, balance sheet line items, and income statement elements...</p>",
-        gate2: "<h3>Executive Summary</h3><p>High-yield outline summaries covering current vs. non-current distinctions and operating vs. financing cash flows.</p>",
-        gate3: [
-            "TRAP: Non-cash investing and financing activities must be disclosed separately, not on the cash flow grid.",
-            "NOTE: Under US GAAP, interest paid is classified under Operating Activities.",
-            "TRAP: Comprehensive income excludes investments by and distributions to owners."
-        ],
-        gate4: generateSampleQuestions("GLEIM", 20)
-    }
-};
-
-let currentTrack = "HOCK";
-let currentGate = "gate1";
-
-// Generator function to create structured 20 MCQs for testing
-function generateSampleQuestions(publisher, count) {
-    const questions = [];
-    for (let i = 1; i <= count; i++) {
-        questions.push({
-            id: i,
-            stem: `[${publisher} Style Q${i}] Which of the following statements correctly describes the handling of specific accounting items under this unit?`,
-            options: {
-                A: "Option A statement representing standard reporting procedure.",
-                B: "Option B statement confusing period costs with product costs.",
-                C: "Option C statement applying an incorrect valuation method.",
-                D: "Option D statement omitting key disclosure rules."
-            },
-            correct: "A",
-            rationales: {
-                A: "Correct. Option A properly aligns with US GAAP standard treatment.",
-                B: "Incorrect. Option B misclassifies period expenses into inventory valuation.",
-                C: "Incorrect. Option C applies historical cost incorrectly.",
-                D: "Incorrect. Option D fails to include mandatory note disclosures."
-            }
-        });
-    }
-    return questions;
-}
-
-// UI State Management
-function selectTrack(track) {
-    currentTrack = track;
-    
-    // Update Track Buttons
-    document.getElementById("btnTrackHock").className = `track-btn ${track === 'HOCK' ? 'active-hock' : ''}`;
-    document.getElementById("btnTrackGleim").className = `track-btn ${track === 'GLEIM' ? 'active-gleim' : ''}`;
-
-    renderContent();
-}
-
-function selectGate(gateId) {
-    currentGate = gateId;
-    
-    // Update Gate Buttons
-    const buttons = document.querySelectorAll(".gate-btn");
-    buttons.forEach((btn, idx) => {
-        btn.classList.toggle("active", `gate${idx + 1}` === gateId);
-    });
-
-    renderContent();
-}
-
-function renderContent() {
-    const data = studyData[currentTrack];
-
-    // Hide all panels
-    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-
-    const activePanel = document.getElementById(currentGate);
-    activePanel.classList.add("active");
-
-    if (currentGate === "gate1") {
-        activePanel.innerHTML = `<h2>${data.unitTitle}</h2>` + data.gate1;
-    } else if (currentGate === "gate2") {
-        activePanel.innerHTML = `<h2>${data.unitTitle}</h2>` + data.gate2;
-    } else if (currentGate === "gate3") {
-        let html = `<h2>Study Notes & Exam Traps</h2><ul>`;
-        data.gate3.forEach(note => { html += `<li>${note}</li>`; });
-        html += `</ul>`;
-        activePanel.innerHTML = html;
-    } else if (currentGate === "gate4") {
-        let html = `<h2>Practice MCQs (${data.gate4.length} Questions)</h2>`;
-        data.gate4.forEach(q => {
-            html += `
-                <div class="mcq-card">
-                    <span class="badge">${currentTrack} - Q${q.id}</span>
-                    <div class="mcq-stem">${q.stem}</div>
-                    <ul class="options-list">
-                        ${Object.keys(q.options).map(opt => `
-                            <li class="option-item" onclick="checkAnswer(this, '${currentTrack}', ${q.id}, '${opt}')">
-                                <strong>(${opt})</strong>${q.options[opt]}
-                            </li>
-                        `).join('')}
-                    </ul>
-                    <div class="explanation-box" id="exp-${currentTrack}-${q.id}"></div>
+    <!-- Background Desktop Setup Visual -->
+    <div class="background-container">
+        <div class="pc-monitor-visual">
+            <div class="financial-model-screen">
+                <div class="chart-area">
+                    <div style="font-size: 12px; color: #66fcf1;">FINANCIAL PLANNING & COST ALLOCATION MODEL</div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line" style="width: 70%;"></div>
+                    <div class="chart-line" style="width: 85%;"></div>
                 </div>
-            `;
-        });
-        activePanel.innerHTML = html;
-    }
-}
+                <div class="data-grid">
+                    <div class="data-row"><span>ALLOCATION:</span><span>SEC D</span></div>
+                    <div class="data-row"><span>CHOICE B:</span><span>MAINT.</span></div>
+                    <div class="data-row"><span>CHOICE D:</span><span>QUAL.</span></div>
+                    <div class="data-row"><span>VOL 1:</span><span>SEC A-C</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-function checkAnswer(element, track, qId, selectedOpt) {
-    const question = studyData[track].gate4.find(q => q.id === qId);
-    const parentList = element.parentElement;
-    
-    // Reset styling within this card
-    parentList.querySelectorAll(".option-item").forEach(item => {
-        item.className = "option-item";
-    });
+    <!-- Main Foreground UI -->
+    <div class="ui-overlay">
+        <header>
+            <h1>CMA EXAM PREP PORTAL</h1>
+            <p>HOCK International Materials Portal</p>
+        </header>
 
-    const expBox = document.getElementById(`exp-${track}-${qId}`);
-    expBox.style.display = "block";
+        <div class="gates-grid">
+            <!-- Gate 1: Comprehensive Textbook -->
+            <div class="gate-card" onclick="openGate('textbook')">
+                <div class="gate-icon">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div class="gate-info">
+                    <h3>Overall Textbook</h3>
+                    <p>Hock CMA Part 1 Vol 1 (Sec A-C) & Vol 2 (Sec D-F)</p>
+                </div>
+            </div>
 
-    if (selectedOpt === question.correct) {
-        element.classList.add("correct-selected");
-        expBox.innerHTML = `<strong>Correct!</strong><br>${question.rationales[selectedOpt]}`;
-    } else {
-        element.classList.add("incorrect-selected");
-        expBox.innerHTML = `<strong>Incorrect.</strong> Choice (${selectedOpt}) is wrong because: ${question.rationales[selectedOpt]}<br><br><strong>Correct Answer (${question.correct}):</strong> ${question.rationales[question.correct]}`;
-    }
-}
+            <!-- Gate 2: Test Bank MCQs -->
+            <div class="gate-card" onclick="openGate('mcqs')">
+                <div class="gate-icon">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </div>
+                <div class="gate-info">
+                    <h3>Overall MCQs</h3>
+                    <p>Complete Question Bank & Answer Explanations</p>
+                </div>
+            </div>
 
-// Initial Render
-renderContent();
-</script>
+            <!-- Gate 3: Unit Summaries & Unit-Specific MCQs -->
+            <div class="gate-card" onclick="openGate('summaries')">
+                <div class="gate-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div class="gate-info">
+                    <h3>Unit Summaries & MCQs</h3>
+                    <p>Section D Cost Mgmt Units with Isolated Q&A</p>
+                </div>
+            </div>
 
+            <!-- Gate 4: Real CMA Inspirational Stories -->
+            <div class="gate-card" onclick="openGate('stories')">
+                <div class="gate-icon">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div class="gate-info">
+                    <h3>CMA Stories</h3>
+                    <p>Real Candidate Journeys & Concept Application</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Gate Content -->
+    <div class="modal" id="gateModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeGate()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        function openGate(gateType) {
+            const modal = document.getElementById('gateModal');
+            const body = document.getElementById('modalBody');
+            
+            if (gateType === 'textbook') {
+                body.innerHTML = `
+                    <h2>Hock Official Textbook Materials</h2>
+                    <div class="unit-card">
+                        <h4>2024-2025 Edition — CMA Preparatory Program</h4>
+                        <p><strong>Part 1 Volume 1:</strong> Sections A – C (Financial Planning, Performance, and Analytics)[span_0](start_span)[span_0](end_span)</p>
+                        <p><em>Authors: Brian Hock, CMA, CIA and Lynn Roden, CMA</em>[span_1](start_span)[span_1](end_span)</p>
+                    </div>
+                    <div class="unit-card">
+                        <h4>2024-2025 Edition — CMA Preparatory Program</h4>
+                        <p><strong>Part 1 Volume 2:</strong> Sections D – F[span_2](start_span)[span_2](end_span)</p>
+                    </div>
+                `;
+            } else if (gateType === 'mcqs') {
+                body.innerHTML = `
+                    <h2>Overall MCQ Test Bank</h2>
+                    <div class="unit-card">
+                        <p><strong>Question ID:</strong> Section D Service Cost Allocation Example</p>
+                        <p><strong>Explanation for Choice B:</strong> This is the amount of maintenance costs allocated to the assembly department, not the total service costs allocated to the assembly department.[span_3](start_span)[span_3](end_span)</p>
+                        <p><strong>Explanation for Choice D:</strong> This is the amount of quality control costs allocated to the assembly department, not the total service costs allocated to the assembly department.[span_4](start_span)[span_4](end_span)</p>
+                    </div>
+                `;
+            } else if (gateType === 'summaries') {
+                body.innerHTML = `
+                    <h2>Unit Summaries & Isolated MCQs</h2>
+                    <div class="unit-card">
+                        <h4>Section D: Cost Management</h4>
+                        <p><strong>Summary:</strong> Covers cost allocation methodologies for service departments to production departments (e.g., Maintenance & Quality Control).[span_5](start_span)[span_5](end_span)</p>
+                        <hr style="margin: 8px 0; opacity: 0.2;">
+                        <p><strong>Isolated MCQ Unit Question:</strong> How are service department costs allocated to assembly?</p>
+                        <p><em>Answer Detail:</em> Separate maintenance costs (Choice B) from quality control costs (Choice D) to arrive at total service cost.[span_6](start_span)[span_6](end_span)</p>
+                    </div>
+                `;
+            } else if (gateType === 'stories') {
+                body.innerHTML = `
+                    <h2>Inspiring CMA Candidate Stories</h2>
+                    <div class="story-card">
+                        <h4>Mastering Service Cost Allocation Under Pressure</h4>
+                        <p>"When studying Section D (Cost Management), I struggled with separating specific maintenance costs from total service allocations[span_7](start_span)[span_7](end_span). Understanding Hock's choice-by-choice explanations helped me bridge the gap between financial modeling theory and real-world assembly cost tracking[span_8](start_span)[span_8](end_span). Passing Part 1 proved that systematic prep pays off!"</p>
+                    </div>
+                `;
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeGate() {
+            document.getElementById('gateModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
